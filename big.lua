@@ -83,6 +83,29 @@ function Big:__eq( other )
 end
 
 
+function Big:__lt( other )
+  if self.length == other.length then
+    return self.length < other.length
+  else
+    for i = 1, self.length do
+      if self[i] >= other[i] then
+        return false
+      end
+    end
+    return true
+  end
+end
+
+
+--correct-er way, but slower, due to loop initialization, we could do it in constant time if we could be certain that the number is always truncated, but since manual changes in digits is allowed, we can't be certain
+function Big:isZero()
+  for i = 1, self.length do
+    if self[i] ~= 0 then return false end
+  end
+  return true
+end
+
+
 function Big:__sub( other )
   local base, len, ret = assert( getBase( self, other ) ), math.max( self.length, other.length ), {}
   local rem = false
@@ -95,8 +118,8 @@ function Big:__sub( other )
       ret[i], rem = sdig-odig-rem, false
     end
   end
-  return Big:new( ret )
-end  
+  return Big:new( ret ):truncateZeros()
+end
 
 
 function Big:__mul( other )
@@ -106,14 +129,16 @@ function Big:__mul( other )
     for j = 1, other.length do
       local x = self[i]*other[j]+(ret[i+j-1] or 0)
       ret[i+j-1] = x%base
-      ret[i+j] = x//base
+      ret[i+j] = math.floor(x/base)
     end
   end
   return Big:new( ret )
 end
 
-local a,b=1234567890,1234567890
-print((Big:parse(''..a)*Big:parse(''..b)):truncateZeros())
-print(a*b)
+
+function Big:__div( other )
+  error"TODO"
+end
+
 
 return Big
