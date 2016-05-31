@@ -97,7 +97,7 @@ function Big:__lt( other )
 end
 
 
---correct-er way, but slower, due to loop initialization, we could do it in constant time if we could be certain that the number is always truncated, but since manual changes in digits is allowed, we can't be certain
+--correct-er way, but slower, due to loop initialization, we could do it in constant time if we could be certain that the number is always truncated, but since manual changes in digits are allowed, we can't be certain
 function Big:isZero()
   for i = 1, self.length do
     if self[i] ~= 0 then return false end
